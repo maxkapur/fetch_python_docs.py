@@ -18,7 +18,7 @@ if __name__ == "__main__":
     parsed = parser.parse_args()
 
     major, minor, *_ = sys.version_info
-    url = f"https://docs.python.org/3/archives/python-{major}.{minor}-docs-html.tar.bz2"
+    url = f"https://docs.python.org/{major}.{minor}/archives/python-{major}.{minor}-docs-html.tar.bz2"
     outfile = HERE / f"python-{major}.{minor}-docs-html.tar.bz2"
 
     print(f"Downloading {url}")
