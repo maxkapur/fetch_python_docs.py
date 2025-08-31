@@ -35,7 +35,7 @@ if __name__ == "__main__":
     if (outdir / "index.html").is_file():
         print(f"{outdir}/index.html already exists")
     else:
-        subprocess.run(["tar", "vxjf", outfile], cwd=HERE).check_returncode()
+        subprocess.run(["tar", "vxf", outfile], cwd=HERE).check_returncode()
 
     if parsed.serve:
         # Use a different port from 8000 to avoid conflicting with other
