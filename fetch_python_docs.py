@@ -46,7 +46,7 @@ if __name__ == "__main__":
         # Use a different port from 8000 to avoid conflicting with other
         # instances of http.server
         server = subprocess.Popen(
-            [sys.executable, "-m", "http.server", "-d", outdir, "8004"]
+            [sys.executable, "-m", "http.server", "-d", outdir.absolute(), "8004"]
         )
         time.sleep(0.5)
         webbrowser.open("http://localhost:8004")
