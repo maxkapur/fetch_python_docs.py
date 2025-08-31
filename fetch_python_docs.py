@@ -25,7 +25,10 @@ if __name__ == "__main__":
     if outfile.is_file():
         print(f"{outfile} already exists")
     else:
-        subprocess.run(["wcurl", url, "--output", outfile], cwd=HERE).check_returncode()
+        # -s: silent mode
+        # -S: but show errors
+        # -L: follow redirect
+        subprocess.run(["curl", "-sSL", url, "--output", outfile], cwd=HERE).check_returncode()
 
     print(f"Extracting {outfile}")
     outdir = HERE / f"python-{major}.{minor}-docs-html"
