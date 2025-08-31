@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+"""Idempotently download, extract, and serve a mirror of <docs.python.org>."""
+
 import argparse
 import subprocess
 import sys
