@@ -29,7 +29,9 @@ if __name__ == "__main__":
         # -S: but show errors
         # -L: follow redirect
         # -f: fail fast on HTTP error
-        subprocess.run(["curl", "-sSLf", url, "--output", outfile], cwd=HERE).check_returncode()
+        subprocess.run(
+            ["curl", "-sSLf", url, "--output", outfile], cwd=HERE
+        ).check_returncode()
     assert outfile.is_file()
 
     print(f"Extracting {outfile}")
