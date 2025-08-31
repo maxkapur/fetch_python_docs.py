@@ -30,6 +30,7 @@ if __name__ == "__main__":
         # -L: follow redirect
         # -f: fail fast on HTTP error
         subprocess.run(["curl", "-sSLf", url, "--output", outfile], cwd=HERE).check_returncode()
+    assert outfile.is_file()
 
     print(f"Extracting {outfile}")
     outdir = HERE / f"python-{major}.{minor}-docs-html"
@@ -37,6 +38,7 @@ if __name__ == "__main__":
         print(f"{outdir}/index.html already exists")
     else:
         subprocess.run(["tar", "vxf", outfile], cwd=HERE).check_returncode()
+        assert (outdir / "index.html").is_file()
 
     if parsed.serve:
         # Use a different port from 8000 to avoid conflicting with other
