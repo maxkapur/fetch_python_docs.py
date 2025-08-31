@@ -28,7 +28,8 @@ if __name__ == "__main__":
         # -s: silent mode
         # -S: but show errors
         # -L: follow redirect
-        subprocess.run(["curl", "-sSL", url, "--output", outfile], cwd=HERE).check_returncode()
+        # -f: fail fast on HTTP error
+        subprocess.run(["curl", "-sSLf", url, "--output", outfile], cwd=HERE).check_returncode()
 
     print(f"Extracting {outfile}")
     outdir = HERE / f"python-{major}.{minor}-docs-html"
