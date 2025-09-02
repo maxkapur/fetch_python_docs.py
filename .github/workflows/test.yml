@@ -18,6 +18,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # You can test your matrix by printing the current Python version
       - name: Run script
         run: ./fetch_python_docs.py
+
+      - name: Ruff format & check
+        run: |
+          ruff format --check
+          ruff check
