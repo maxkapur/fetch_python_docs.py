@@ -18,6 +18,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install dependencies
+        run: pip install requests ruff
+
       - name: Run script
         run: ./fetch_python_docs.py
 
