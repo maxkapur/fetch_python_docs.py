@@ -2,11 +2,14 @@
 """Idempotently download, extract, and serve a mirror of <docs.python.org>."""
 
 import argparse
+import http.client
 import subprocess
 import sys
 import time
 import webbrowser
 from pathlib import Path
+
+import requests
 
 HERE = Path(__file__).parent
 
@@ -25,13 +28,12 @@ if __name__ == "__main__":
     if outfile.is_file():
         print(f"{outfile} already exists")
     else:
-        # -s: silent mode
-        # -S: but show errors
-        # -L: follow redirect
-        # -f: fail fast on HTTP error
-        subprocess.run(
-            ["curl", "-sSLf", url, "--output", outfile], cwd=HERE
-        ).check_returncode()
+        with requests.get(url) as r, open(outfile, "wb") as f:
+            if r.status_code != 200:
+                descr = http.client.responses[r.status_code]
+                raise RuntimeError(f"{r.status_code = } ({descr})")
+            f.write(r.content)
+            print(f"Saved to {outfile} ({len(r.content)} bytes)")
     assert outfile.is_file()
 
     print(f"Extracting {outfile}")
