@@ -10,6 +10,21 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 
+DOT_DESKTOP = f"""\
+[Desktop Entry]
+Version=1.0
+Name=Python Docs
+Comment=View Python docs from a local mirror
+Exec={__file__}
+# Icon=/todo.png
+Path={str(HERE)}
+Terminal=false
+Type=Application
+Categories=Utility;Application;
+"""
+
+DOT_DESKTOP_PATH = Path.home() / ".local" / "share" / "applications" / f"maxkapur-{Path(__file__).name}.desktop"
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Idempotently download/serve Python docs from a local copy"
@@ -41,6 +56,16 @@ if __name__ == "__main__":
     else:
         subprocess.run(["tar", "vxf", outfile], cwd=HERE).check_returncode()
         assert (outdir / "index.html").is_file()
+
+    if sys.platform == "linux":
+        print(f"Creating .desktop file")
+        DOT_DESKTOP_PATH.parent.mkdir(exist_ok=True, parents=True)
+        if DOT_DESKTOP_PATH.is_file():
+            print(f"{DOT_DESKTOP_PATH} already exists")
+        else:
+            with open(DOT_DESKTOP_PATH, "w") as f:
+                f.write(DOT_DESKTOP)
+            print(f"Desktop file: {DOT_DESKTOP_PATH}")
 
     if parsed.serve:
         # Use a different port from 8000 to avoid conflicting with other
