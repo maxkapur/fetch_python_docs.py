@@ -5,6 +5,7 @@ import argparse
 import http.client
 import subprocess
 import sys
+import tarfile
 import time
 import webbrowser
 from pathlib import Path
@@ -34,14 +35,15 @@ if __name__ == "__main__":
                 raise RuntimeError(f"{r.status_code = } ({descr})")
             f.write(r.content)
             print(f"Saved to {outfile} ({len(r.content)} bytes)")
-    assert outfile.is_file()
 
     print(f"Extracting {outfile}")
+    assert outfile.is_file()
     outdir = HERE / f"python-{major}.{minor}-docs-html"
     if (outdir / "index.html").is_file():
         print(f"{outdir}/index.html already exists")
     else:
-        subprocess.run(["tar", "vxf", outfile], cwd=HERE).check_returncode()
+        with tarfile.open(outfile) as f:
+            f.extractall(path=HERE, filter="data")  # Extracting HERE creates outdir
         assert (outdir / "index.html").is_file()
 
     if parsed.serve:
