@@ -18,7 +18,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Idempotently download/serve Python docs from a local copy"
     )
-    parser.add_argument("--serve", action="store_true")
+    parser.add_argument(
+        "--serve", action="store_true", help="Serve docs over HTTP on port 8004"
+    )
+    parser.add_argument(
+        "--open", action="store_true", help="Serve and open the docs in the browser"
+    )
     parsed = parser.parse_args()
 
     major, minor, *_ = sys.version_info
@@ -46,14 +51,15 @@ if __name__ == "__main__":
             f.extractall(path=HERE, filter="data")  # Extracting HERE creates outdir
         assert (outdir / "index.html").is_file()
 
-    if parsed.serve:
+    if parsed.serve or parsed.open:
         # Use a different port from 8000 to avoid conflicting with other
         # instances of http.server
         server = subprocess.Popen(
             [sys.executable, "-m", "http.server", "-d", outdir.absolute(), "8004"]
         )
-        time.sleep(0.5)
-        webbrowser.open("http://localhost:8004")
+        if parsed.open:
+            time.sleep(0.5)
+            webbrowser.open("http://localhost:8004")
 
         try:
             server.wait()

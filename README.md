@@ -9,10 +9,13 @@ The script uses only the standard library and `requests`, so in most
 environments (e.g. Ubuntu) you can just run the script in your shell:
 
 ```
+# Open docs in web browser
+./fetch_python_docs.py --open
+# Start the web server but don't open anything
 ./fetch_python_docs.py --serve
+# Just downlaod/extract docs
+./fetch_python_docs.py
 ```
-
-Omit `--serve` to only download and extract.
 
 ## Why not just use `pydoc -b`?
 
