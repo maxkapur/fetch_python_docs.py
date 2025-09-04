@@ -14,7 +14,8 @@ import requests
 
 HERE = Path(__file__).parent
 
-if __name__ == "__main__":
+
+def get_options():
     parser = argparse.ArgumentParser(
         description="Idempotently download/serve Python docs from a local copy"
     )
@@ -24,7 +25,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--open", action="store_true", help="Serve and open the docs in the browser"
     )
-    parsed = parser.parse_args()
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    options = get_options()
 
     major, minor, *_ = sys.version_info
     url = f"https://docs.python.org/{major}.{minor}/archives/python-{major}.{minor}-docs-html.tar.bz2"
@@ -51,13 +56,13 @@ if __name__ == "__main__":
             f.extractall(path=HERE, filter="data")  # Extracting HERE creates outdir
         assert (outdir / "index.html").is_file()
 
-    if parsed.serve or parsed.open:
+    if options.serve or options.open:
         # Use a different port from 8000 to avoid conflicting with other
         # instances of http.server
         server = subprocess.Popen(
             [sys.executable, "-m", "http.server", "-d", outdir.absolute(), "8004"]
         )
-        if parsed.open:
+        if options.open:
             time.sleep(0.5)
             webbrowser.open("http://localhost:8004")
 
