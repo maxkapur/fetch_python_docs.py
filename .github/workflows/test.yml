@@ -32,6 +32,11 @@ jobs:
           ./fetch_python_docs.py --systemd
           systemctl --user is-active python-docs
 
+      - name: Clean up
+        run: |
+          ./fetch_python_docs.py --clean
+          ! systemctl --user is-enabled python-docs
+
       - name: Ruff format & check
         run: |
           ruff format --check
