@@ -27,6 +27,11 @@ jobs:
       - name: Check system service is active
         run: systemctl --user is-active python-docs
 
+      - name: Do it again (check idempotency)
+        run: |
+          ./fetch_python_docs.py --systemd
+          systemctl --user is-active python-docs
+
       - name: Ruff format & check
         run: |
           ruff format --check
