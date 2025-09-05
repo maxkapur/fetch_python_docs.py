@@ -4,6 +4,7 @@
 import argparse
 import http.client
 import shlex
+import subprocess
 import sys
 import tarfile
 from pathlib import Path
@@ -73,6 +74,9 @@ def define_user_service(outdir):
 Type=simple
 Description=Serve Python docs on port 8004
 ExecStart={cmd}
+
+[Install]
+WantedBy=default.target
 """
     if dest.is_file():
         with open(dest) as f:
@@ -88,8 +92,13 @@ ExecStart={cmd}
 
 def enable_user_service():
     """Start and enable the systemd unit service."""
-    # TODO: fix "The unit files have no installation config"
-    pass
+    cmd = ["systemctl", "--user", "daemon-reload"]
+    print("Enabling and starting systemd user service")
+    print(f"{shlex.join(cmd)}")
+    subprocess.run(cmd).check_returncode()
+    cmd = ["systemctl", "--user", "enable", "--now", "python-docs"]
+    print(f"{shlex.join(cmd)}")
+    subprocess.run(cmd).check_returncode()
 
 
 if __name__ == "__main__":
