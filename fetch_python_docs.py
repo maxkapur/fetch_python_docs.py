@@ -20,10 +20,12 @@ PORT = "8004"
 def get_options():
     """Parse command line options."""
     parser = argparse.ArgumentParser(
-        description="Idempotently download/serve Python docs from a local copy"
+        description="Idempotently download and serve Python docs from a local copy"
     )
     parser.add_argument(
-        "--systemd", action="store_true", help="Also create a systemd service"
+        "--systemd",
+        action="store_true",
+        help="Also create, enable, and start a systemd service",
     )
     return parser.parse_args()
 
@@ -36,20 +38,20 @@ def download_extract():
 
     print(f"Downloading {url}")
     if outfile.is_file():
-        print(f"{outfile} already exists")
+        print(f"  Already exists: {outfile}")
     else:
         with requests.get(url) as r, open(outfile, "wb") as f:
             if r.status_code != 200:
                 descr = http.client.responses[r.status_code]
                 raise RuntimeError(f"{r.status_code = } ({descr})")
             f.write(r.content)
-            print(f"Saved to {outfile} ({len(r.content)} bytes)")
+            print(f"  Downloaded: {outfile} ({len(r.content)} bytes)")
 
     print(f"Extracting {outfile}")
     assert outfile.is_file()
     outdir = HERE / f"python-{major}.{minor}-docs-html"
     if (outdir / "index.html").is_file():
-        print(f"{outdir}/index.html already exists")
+        print(f"  Already exists: {outdir}/index.html")
     else:
         with tarfile.open(outfile) as f:
             f.extractall(path=HERE, filter="data")  # Extracting HERE creates outdir
@@ -84,22 +86,24 @@ WantedBy=default.target
         with open(dest) as f:
             contents = f.read()
         if contents == body:
-            print(f"{dest} already defined")
+            print(f"  Already defined: {dest}")
             return
 
     with open(dest, "w") as f:
         f.write(body)
-        print(f"Saved to {dest}")
+        print(f"  Saved: {dest}")
 
 
 def enable_user_service():
     """Start and enable the systemd unit service."""
-    cmd = ["systemctl", "--user", "daemon-reload"]
     print("Enabling and starting systemd user service")
-    print(f"{shlex.join(cmd)}")
+
+    cmd = ["systemctl", "--user", "daemon-reload"]
+    print(f"  {shlex.join(cmd)}")
     subprocess.run(cmd).check_returncode()
+
     cmd = ["systemctl", "--user", "enable", "--now", "python-docs"]
-    print(f"{shlex.join(cmd)}")
+    print(f"  {shlex.join(cmd)}")
     subprocess.run(cmd).check_returncode()
 
 
