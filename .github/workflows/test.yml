@@ -22,7 +22,7 @@ jobs:
         run: pip install requests ruff
 
       - name: Run script
-        run: ./fetch_python_docs.py
+        run: ./fetch_python_docs.py --systemd
 
       - name: Ruff format & check
         run: |
