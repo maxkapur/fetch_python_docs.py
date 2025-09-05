@@ -10,6 +10,7 @@ import tarfile
 from pathlib import Path
 
 import requests
+from send2trash import send2trash
 
 HERE = Path(__file__).parent
 
@@ -27,7 +28,31 @@ def get_options():
         action="store_true",
         help="Also create, enable, and start a systemd service",
     )
+    parser.add_argument(
+        "--clean",
+        action="store_true",
+        help="Clean out past downloads and unit files (uninstall)",
+    )
     return parser.parse_args()
+
+
+def clean():
+    """Clean (trash) past downloads and unit files."""
+    print("Cleaning past downloads and unit files")
+    trash_targets = []
+    if (
+        p := Path.home() / ".config" / "systemd" / "user" / "python-docs.service"
+    ).exists():
+        cmd = ["systemctl", "--user", "disable", "--now", "python-docs.service"]
+        print(f"  {shlex.join(cmd)}")
+        subprocess.run(cmd).check_returncode()
+        trash_targets.append(p)
+
+    trash_targets.extend(HERE.glob("python-*.*-docs*/"))
+    trash_targets.extend(HERE.glob("python-*.*-docs*.tar.bz2"))
+    for p in trash_targets:
+        print(f"  Trashing {p}")
+    send2trash(trash_targets)
 
 
 def download_extract():
@@ -109,6 +134,11 @@ def enable_user_service():
 
 if __name__ == "__main__":
     options = get_options()
+
+    if options.clean:
+        clean()
+        exit()
+
     outdir = download_extract()
 
     if options.systemd:
