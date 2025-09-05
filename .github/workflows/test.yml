@@ -24,6 +24,9 @@ jobs:
       - name: Run script
         run: ./fetch_python_docs.py --systemd
 
+      - name: Check system service is active
+        run: systemctl --user is-active python-docs
+
       - name: Ruff format & check
         run: |
           ruff format --check
