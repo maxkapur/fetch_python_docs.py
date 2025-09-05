@@ -5,10 +5,11 @@ A Python script to idempotently download, extract, and locally serve a mirror of
 
 ## Installation and usage
 
-The script uses only the standard library and `requests`, so in most
+The script has minimal dependencies (`requests` and `send2trash`), so in most
 environments (e.g. Ubuntu) you can just run the script in your shell:
 
 ```shell
+sudo apt install python3-requests python3-send2trash  # if needed
 ./fetch_python_docs.py --systemd
 ```
 
