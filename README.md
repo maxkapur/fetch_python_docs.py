@@ -8,16 +8,23 @@ A Python script to idempotently download, extract, and locally serve a mirror of
 The script uses only the standard library and `requests`, so in most
 environments (e.g. Ubuntu) you can just run the script in your shell:
 
-```
-# Just download/extract docs
-./fetch_python_docs.py
-# Also define a systemd user service
+```shell
 ./fetch_python_docs.py --systemd
 ```
 
-The docs are downloaded to within the git repository. You can either open the
-files manually, or by running `systemctl --user start python-docs` and opening
-`localhost:8004` in a browser.
+This downloads the docs to within the git repository, then defines, starts, and
+enables a systemd user service. You can browse the docs by going to
+`localhost:8004` in a web browser.
+
+To skip the systemd integration and just download the docs, use the following
+command instead:
+
+```shell
+./fetch_python_docs.py
+```
+
+The docs are downloaded to within the git repository and you can open
+`/python-3.xx-docs-html/index.html` manually.
 
 ## Why not just use `pydoc -b`?
 
