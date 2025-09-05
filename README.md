@@ -26,6 +26,12 @@ command instead:
 The docs are downloaded to within the git repository and you can open
 `/python-3.xx-docs-html/index.html` manually.
 
+To reverse installation, use the `--clean` flag:
+
+```shell
+./fetch_python_docs.py --clean
+```
+
 ## Why not just use `pydoc -b`?
 
 The color scheme.
