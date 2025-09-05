@@ -62,8 +62,7 @@ def define_user_service(outdir):
     """Create a systemd unit file to serve docs as a user service."""
     print("Creating systemd unit file")
     if not Path("/run/systemd/system").exists():
-        print("Host appears not to use systemd; skipping")
-        return
+        raise ValueError("Host appears not to use systemd")
 
     dest = Path.home() / ".config" / "systemd" / "user" / "python-docs.service"
     dest.parent.mkdir(parents=True, exist_ok=True)
